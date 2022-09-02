@@ -48,7 +48,16 @@
 #   define CEREAL_DLL_EXPORT __declspec(dllexport)
 #   define CEREAL_USED
 #else // clang or gcc
-#   define CEREAL_DLL_EXPORT __attribute__ ((visibility("default")))
+// Under normal circumstances we may keep the following, but forcing a
+// visibility makes upstream libraries have big linker error messages when the
+// library's objects are compiled not under the same visibility.
+// Should mostly be harmless, linkers remove things for a reason.
+//
+// Compiler/linker contracts are:
+// the compiler can do anything it wants to your code so long as the observable
+// behavior is the same. 
+// #   define CEREAL_DLL_EXPORT __attribute__ ((visibility("default")))
+#   define CEREAL_DLL_EXPORT 
 #   define CEREAL_USED __attribute__ ((__used__))
 #endif
 

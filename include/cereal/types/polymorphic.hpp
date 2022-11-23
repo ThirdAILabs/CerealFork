@@ -79,16 +79,20 @@
 
     Polymorphic support in cereal requires RTTI to be
     enabled */
-#define CEREAL_REGISTER_TYPE(...)                                        \
-  namespace cereal {                                                     \
-  namespace detail {                                                     \
-  template <>                                                            \
-  struct binding_name<__VA_ARGS__>                                       \
-  {                                                                      \
-    CEREAL_STATIC_CONSTEXPR char const * name() { return #__VA_ARGS__; } \
-  };                                                                     \
-  } } /* end namespaces */                                               \
-  CEREAL_BIND_TO_ARCHIVES(__VA_ARGS__)
+#ifdef THIRDAI_NO_CEREAL_POLYMORPHISM
+  #define CEREAL_REGISTER_TYPE(...)
+#else
+  #define CEREAL_REGISTER_TYPE(...)                                        \
+    namespace cereal {                                                     \
+    namespace detail {                                                     \
+    template <>                                                            \
+    struct binding_name<__VA_ARGS__>                                       \
+    {                                                                      \
+      CEREAL_STATIC_CONSTEXPR char const * name() { return #__VA_ARGS__; } \
+    };                                                                     \
+    } } /* end namespaces */                                               \
+    CEREAL_BIND_TO_ARCHIVES(__VA_ARGS__)                                  
+#endif
 
 //! Registers a polymorphic type with cereal, giving it a
 //! user defined name
